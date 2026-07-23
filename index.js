@@ -9,15 +9,25 @@ const questionRouter = require('./Routes/QuestionRouter');
 const previewRouter = require('./Routes/PreviewRouter');
 
 require('dotenv').config();
-require('./Models/db');
+
+// cors + body parsing registered FIRST, before anything that could throw
+// (like the DB connection below) — this guarantees every response,
+// including error responses, carries the right CORS headers.
+app.use(cors());
+app.use(bodyParser.json());
+
+try {
+    require('./Models/db');
+} catch (err) {
+    console.error('Failed to initialize DB connection module:', err.message);
+}
+
 const PORT = process.env.PORT || 8080;
 
 app.get('/ping', (req, res) => {
     res.send('PONG');
 });
 
-app.use(bodyParser.json());
-app.use(cors());
 app.use('/auth', AuthRouter);
 app.use('/products', ProductRouter);
 app.use('/modules', moduleRouter);
