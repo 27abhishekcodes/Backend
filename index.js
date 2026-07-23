@@ -13,7 +13,11 @@ require('dotenv').config();
 // cors + body parsing registered FIRST, before anything that could throw
 // (like the DB connection below) — this guarantees every response,
 // including error responses, carries the right CORS headers.
-app.use(cors());
+app.use(cors({
+    origin: "https://frontend-pf1g10p36-27abhishekcodes-projects.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
 app.use(bodyParser.json());
 
 try {
