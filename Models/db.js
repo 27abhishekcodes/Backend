@@ -11,7 +11,7 @@ const connectDB = async () => {
         console.log("Before connect:", mongoose.connection.readyState);
 
         await mongoose.connect(
-            "mongodb+srv://abhishek_1234:Abhishek1234@cluster0.nj7buny.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0"
+            "mongodb+srv://abhishek_1234:abhishek1234@cluster0.nj7buny.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0"
         );
 
         console.log("After connect:", mongoose.connection.readyState);
