@@ -38,7 +38,8 @@ const login = async (req, res) => {
         console.log("Mongo connection state:", mongoose.connection.readyState);
 
         const { email, password } = req.body;
-
+        console.log("Login controller reached");
+console.log("Mongo state:", mongoose.connection.readyState);
         console.log("Login attempt:", email);
 
         const user = await UserModel.findOne({ email });
