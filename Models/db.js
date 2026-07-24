@@ -11,7 +11,7 @@ const connectDB = async () => {
         console.log("MONGO_CONN exists:", !!process.env.MONGO_CONN);
 
         const connection = await mongoose.connect(
-  "mongodb+srv://abhisheksh2709_db_user:YOUR_PASSWORD@cluster0.nj7buny.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0"
+  "mongodb+srv://abhishek_1234:Abhishek1234@cluster0.nj7buny.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0"
         );
 
         isConnected = true;
