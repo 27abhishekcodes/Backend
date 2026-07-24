@@ -87,12 +87,14 @@ const login = async (req, res) => {
         });
 
     } catch (err) {
-        console.log("LOGIN ERROR:", err);
+         console.log("LOGIN ERROR:", err);
 
-        return res.status(500).json({
-            message: err.message,
-            success: false
-        });
+    return res.status(500).json({
+        success: false,
+        message: "Login failed",
+        error: err.message,
+        mongoState: mongoose.connection.readyState
+    });
     }
 };
 module.exports = {
