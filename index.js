@@ -17,7 +17,7 @@ const PreviewRouter = require("./Routes/PreviewRouter");
 
 // CORS
 const corsOptions = {
-    origin: "https://frontend-ten-blush-34.vercel.app",
+    origin:  process.env.FRONTEND_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
