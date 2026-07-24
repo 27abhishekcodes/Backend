@@ -33,42 +33,68 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
     try {
+        const mongoose = require("mongoose");
+
+        console.log("Mongo connection state:", mongoose.connection.readyState);
+
         const { email, password } = req.body;
+
+        console.log("Login attempt:", email);
+
         const user = await UserModel.findOne({ email });
-        const errorMsg = 'Auth failed email or password is wrong';
+
+        console.log("User found:", user ? "Yes" : "No");
+
+        const errorMsg = "Auth failed email or password is wrong";
+
         if (!user) {
-            return res.status(403)
-                .json({ message: errorMsg, success: false });
+            return res.status(403).json({
+                message: errorMsg,
+                success: false
+            });
         }
-        const isPassEqual = await bcrypt.compare(password, user.password);
+
+        const isPassEqual = await bcrypt.compare(
+            password,
+            user.password
+        );
+
         if (!isPassEqual) {
-            return res.status(403)
-                .json({ message: errorMsg, success: false });
+            return res.status(403).json({
+                message: errorMsg,
+                success: false
+            });
         }
+
         const jwtToken = jwt.sign(
-            { email: user.email, _id: user._id },
+            {
+                email: user.email,
+                _id: user._id
+            },
             process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        )
+            {
+                expiresIn: "24h"
+            }
+        );
 
-        res.status(200)
-            .json({
-                message: "Login Success",
-                success: true,
-                jwtToken,
-                email,
-                name: user.name,
-                category: user.category
-            })
+        return res.status(200).json({
+            message: "Login Success",
+            success: true,
+            jwtToken,
+            email: user.email,
+            name: user.name,
+            category: user.category
+        });
+
     } catch (err) {
-        console.log(err);
-    res.status(500).json({
-        message: err.message,
-        success: false
-    });
-    }
-}
+        console.log("LOGIN ERROR:", err);
 
+        return res.status(500).json({
+            message: err.message,
+            success: false
+        });
+    }
+};
 module.exports = {
     signup,
     login
