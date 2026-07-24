@@ -14,7 +14,7 @@ require('dotenv').config();
 // (like the DB connection below) — this guarantees every response,
 // including error responses, carries the right CORS headers.
 app.use(cors({
-    origin: "https://frontend-pf1g10p36-27abhishekcodes-projects.vercel.app",
+    origin: "https://frontend-ten-blush-34.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
