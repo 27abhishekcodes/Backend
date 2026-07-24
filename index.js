@@ -5,7 +5,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const connectDB = require("./Models/db");
-app.use(dbMiddleware); 
+
 const AuthRouter = require("./Routes/AuthRouter");
 const ProductRouter = require("./Routes/ProductRouter");
 const ModuleRouter = require("./Routes/ModuleRouter");
@@ -84,7 +84,7 @@ app.get("/db-test", async (req, res) => {
         });
     }
 });
-
+app.use(dbMiddleware); 
 // API Routes
 app.use("/auth", AuthRouter);
 app.use("/products", ProductRouter);
