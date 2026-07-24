@@ -8,6 +8,21 @@ const app = express();
 // Database
 require("./Models/db");
 
+// Middleware
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.use(bodyParser.json());
+
+// Request Logger
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
+
 // Routes
 const AuthRouter = require("./Routes/AuthRouter");
 const ProductRouter = require("./Routes/ProductRouter");
@@ -15,39 +30,7 @@ const ModuleRouter = require("./Routes/ModuleRouter");
 const QuestionRouter = require("./Routes/QuestionRouter");
 const PreviewRouter = require("./Routes/PreviewRouter");
 
-// CORS
-const corsOptions = {
-    origin:  process.env.FRONTEND_URL,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-};
-
-app.use(cors(corsOptions));
-
-// Handle preflight requests
-app.options("*", cors(corsOptions));
-
-// Middleware
-app.use(bodyParser.json());
-
-app.use((req, res, next) => {
-    console.log(req.method, req.url);
-    next();
-});
-// Test Route
-app.get("/ping", (req, res) => {
-    res.send("PONG");
-});
-
-// Routes
-app.use("/auth", AuthRouter);
-app.use("/products", ProductRouter);
-app.use("/modules", ModuleRouter);
-app.use("/questions", QuestionRouter);
-app.use("/preview", PreviewRouter);
-
-// Root Route
+// Health Check
 app.get("/", (req, res) => {
     res.json({
         success: true,
@@ -55,12 +38,24 @@ app.get("/", (req, res) => {
     });
 });
 
+app.get("/ping", (req, res) => {
+    res.send("PONG");
+});
+
+// Test Route
 app.post("/test", (req, res) => {
     res.json({
         success: true,
         message: "POST is working"
     });
 });
+
+// API Routes
+app.use("/auth", AuthRouter);
+app.use("/products", ProductRouter);
+app.use("/modules", ModuleRouter);
+app.use("/questions", QuestionRouter);
+app.use("/preview", PreviewRouter);
 
 // Start server only for local development
 if (process.env.NODE_ENV !== "production") {
