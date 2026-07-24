@@ -1,10 +1,11 @@
 const express = require("express");
+const dbMiddleware = require("./Middlewares/dbMiddleware");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 require("dotenv").config();
 
 const connectDB = require("./Models/db");
-
+app.use(dbMiddleware); 
 const AuthRouter = require("./Routes/AuthRouter");
 const ProductRouter = require("./Routes/ProductRouter");
 const ModuleRouter = require("./Routes/ModuleRouter");
