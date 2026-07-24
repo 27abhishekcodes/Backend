@@ -1,10 +1,9 @@
 const express = require("express");
-const dbMiddleware = require("./Middlewares/dbMiddleware");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 require("dotenv").config();
 
-const connectDB = require("./Models/db");
+const dbMiddleware = require("./Middlewares/dbMiddleware");
 
 const AuthRouter = require("./Routes/AuthRouter");
 const ProductRouter = require("./Routes/ProductRouter");
@@ -14,8 +13,7 @@ const PreviewRouter = require("./Routes/PreviewRouter");
 
 const app = express();
 
-
-// CORS - allow any frontend
+// CORS
 app.use(cors({
     origin: true,
     credentials: true,
@@ -23,31 +21,10 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-
-// Handle preflight requests
 app.options("*", cors());
-
 
 // Body parser
 app.use(bodyParser.json());
-
-
-// Connect database before routes
-app.use(async (req, res, next) => {
-    try {
-        await connectDB();
-        next();
-    } catch (error) {
-        console.error("Database connection failed:", error.message);
-
-        res.status(500).json({
-            success: false,
-            message: "Database connection failed",
-            error: error.message
-        });
-    }
-});
-
 
 // Logger
 app.use((req, res, next) => {
@@ -55,8 +32,7 @@ app.use((req, res, next) => {
     next();
 });
 
-
-// Test routes
+// Health check routes (do not require database)
 app.get("/", (req, res) => {
     res.json({
         success: true,
@@ -64,34 +40,19 @@ app.get("/", (req, res) => {
     });
 });
 
-
 app.get("/ping", (req, res) => {
     res.send("PONG");
 });
-app.get("/db-test", async (req, res) => {
-    try {
-        await connectDB();
 
-        res.json({
-            success: true,
-            message: "Database connected"
-        });
+// Database middleware
+app.use(dbMiddleware);
 
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-});
-app.use(dbMiddleware); 
 // API Routes
 app.use("/auth", AuthRouter);
 app.use("/products", ProductRouter);
 app.use("/modules", ModuleRouter);
 app.use("/questions", QuestionRouter);
 app.use("/preview", PreviewRouter);
-
 
 // Local development only
 if (process.env.NODE_ENV !== "production") {
@@ -101,6 +62,5 @@ if (process.env.NODE_ENV !== "production") {
         console.log(`Server running on port ${PORT}`);
     });
 }
-
 
 module.exports = app;
