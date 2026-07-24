@@ -1,46 +1,62 @@
-const express = require('express');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+require("dotenv").config();
+
 const app = express();
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const AuthRouter = require('./Routes/AuthRouter');
-const ProductRouter = require('./Routes/ProductRouter');
-const moduleRouter = require('./Routes/ModuleRouter');
-const questionRouter = require('./Routes/QuestionRouter');
-const previewRouter = require('./Routes/PreviewRouter');
 
-require('dotenv').config();
+// Database
+require("./Models/db");
 
-// cors + body parsing registered FIRST, before anything that could throw
-// (like the DB connection below) — this guarantees every response,
-// including error responses, carries the right CORS headers.
-app.use(cors({
+// Routes
+const AuthRouter = require("./Routes/AuthRouter");
+const ProductRouter = require("./Routes/ProductRouter");
+const ModuleRouter = require("./Routes/ModuleRouter");
+const QuestionRouter = require("./Routes/QuestionRouter");
+const PreviewRouter = require("./Routes/PreviewRouter");
+
+// CORS
+const corsOptions = {
     origin: "https://frontend-ten-blush-34.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-}));
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options("*", cors(corsOptions));
+
+// Middleware
 app.use(bodyParser.json());
 
-try {
-    require('./Models/db');
-} catch (err) {
-    console.error('Failed to initialize DB connection module:', err.message);
-}
-
-const PORT = process.env.PORT || 8080;
-
-app.get('/ping', (req, res) => {
-    res.send('PONG');
+// Test Route
+app.get("/ping", (req, res) => {
+    res.send("PONG");
 });
 
-app.use('/auth', AuthRouter);
-app.use('/products', ProductRouter);
-app.use('/modules', moduleRouter);
-app.use('/questions', questionRouter);
-app.use('/preview', previewRouter);
+// Routes
+app.use("/auth", AuthRouter);
+app.use("/products", ProductRouter);
+app.use("/modules", ModuleRouter);
+app.use("/questions", QuestionRouter);
+app.use("/preview", PreviewRouter);
 
+// Root Route
+app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "Backend is running successfully"
+    });
+});
 
-app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`)
-})
+// Start server only for local development
+if (process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
 
 module.exports = app;
