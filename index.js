@@ -51,6 +51,13 @@ app.get("/", (req, res) => {
     });
 });
 
+app.post("/test", (req, res) => {
+    res.json({
+        success: true,
+        message: "POST is working"
+    });
+});
+
 // Start server only for local development
 if (process.env.NODE_ENV !== "production") {
     const PORT = process.env.PORT || 8080;
