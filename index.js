@@ -67,7 +67,22 @@ app.get("/", (req, res) => {
 app.get("/ping", (req, res) => {
     res.send("PONG");
 });
+app.get("/db-test", async (req, res) => {
+    try {
+        await connectDB();
 
+        res.json({
+            success: true,
+            message: "Database connected"
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
 
 // API Routes
 app.use("/auth", AuthRouter);
