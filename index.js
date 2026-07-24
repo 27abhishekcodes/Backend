@@ -6,7 +6,9 @@ require("dotenv").config();
 const app = express();
 
 // Database
-require("./Models/db");
+const connectDB = require("./Models/db");
+
+connectDB();
 
 // Middleware
 app.use(cors({
