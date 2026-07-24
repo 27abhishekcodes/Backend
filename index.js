@@ -31,6 +31,10 @@ app.options("*", cors(corsOptions));
 // Middleware
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+    console.log(req.method, req.url);
+    next();
+});
 // Test Route
 app.get("/ping", (req, res) => {
     res.send("PONG");
